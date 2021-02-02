@@ -10,14 +10,20 @@ import Foundation
 ///
 /// Represents a "Card" that is used in the "Concentration" game
 ///
-struct Card {
+
+struct Card: Hashable {
     
     ///
     /// Is the current card facing up?
     ///
     var isFaceUp = false
-    
-    ///
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+        
+    }
+    static func ==(lhs: Card, rhs: Card) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
     /// Is the current card already matched?
     ///
     /// A matched card means that the user playing the game already
@@ -29,7 +35,7 @@ struct Card {
     /// A unique identifier for the card.
     /// (The pair of matching cards have the same identifier)
     ///
-    var identifier: Int
+     private var identifier: Int
     
     ///
     /// Create a card with the given identifier

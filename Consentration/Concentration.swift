@@ -1,7 +1,7 @@
 
 import Foundation
 
-class Concentration {
+struct Concentration {
  
     var cards = [Card]()
     var themes = [Theme] ()
@@ -9,7 +9,7 @@ class Concentration {
         ///
     /// Handle what to do when a card is chosen
     ///
-    func chooseCard(at index: Int) {
+    mutating func chooseCard(at index: Int) {
         
         // Process an unmatched card
         if !cards[index].isMatched {
@@ -18,7 +18,8 @@ class Concentration {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 
                 // If they match, marked them as matched
-                if cards[matchIndex].identifier == cards[index].identifier {
+            
+                if cards[matchIndex] == cards[index] {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
                 }

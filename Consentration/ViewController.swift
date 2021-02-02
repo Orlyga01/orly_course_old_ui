@@ -7,13 +7,21 @@ import UIKit
 class ViewController: UIViewController {
     
     lazy var game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1)/2) // model
+    lazy var emojiChoices: [String] = game.getCurrentTheme().emojiSet!
     
     /// Label that shows how many flips we've done
     
-    @IBOutlet weak var flipCountLabel: UILabel!
+    @IBOutlet weak var flipCountLabel: UILabel! {
+        didSet {
+            setLabelAttrs()
+        }
+    }
     /// Array of cards in the UI
-    @IBOutlet var cardButtons: [UIButton]!
-    var emojiChoices: [String] = []
+    @IBOutlet var cardButtons: [UIButton]! {
+        didSet {
+            
+        }
+    }
     
     @IBOutlet weak var numScore: UILabel!
 
@@ -68,35 +76,31 @@ class ViewController: UIViewController {
                 button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : color
             }
         }
-        if self.emojiChoices.count == 0 {
-            
-            self.emojiChoices = game.getCurrentTheme().emojiSet!
-        }
-
     }
  
-    var emoji = [Int: String]()
+    var emoji = [Card:String]()
 
     ///
     /// Get an emoji for the given card
     func emoji(for card: Card) -> String {
-        if   self.emojiChoices.count == 0 {
-            self.emojiChoices = game.getCurrentTheme().emojiSet!
-        }
-
+        
         // If card doesn't have an emoji set, add a random one
-        if emoji[card.identifier] == nil, emojiChoices.count > 0 {
+        if emoji[card] == nil, emojiChoices.count > 0 {
             // Get a random index between 0-number_of_emoji_choises
             let randomIndex = Int.random(in: 0..<emojiChoices.count)
                         // Add the random emoji to this card
-            emoji[card.identifier] = emojiChoices[randomIndex]
+            emoji[card] = emojiChoices[randomIndex]
             
             // Remove emoji from emojiChoices so that it doesn't get selected again
             self.emojiChoices.remove(at: randomIndex)
         }
         
         // Return the emoji, or "?" if none available
-        return emoji[card.identifier] ?? "?"
+        if emoji[card] != nil {
+            return emoji[card]!
+        } else {
+            return "?"
+        }
     }
     
     ///
@@ -105,13 +109,27 @@ class ViewController: UIViewController {
     private var flipCount = 0  {
         didSet {
             // Keep the flipCountLabel in sync
-            flipCountLabel.text = "Flips: \(flipCount)"
+            setLabelAttrs()
+           
         }
     }
     //MARK: actionds
     @IBAction func newGame(_ sender: Any) {
+       setNewGame()
+    }
+    private func setNewGame(){
         self.game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1)/2) // model
+        self.emoji = [:]
+        self.emojiChoices = game.getCurrentTheme().emojiSet!
         updateViewFromModel()
+    }
+    private func setLabelAttrs(){
+        let attr: [NSAttributedString.Key: Any] = [
+            .strokeWidth: 5.0,
+            .strokeColor: game.getCurrentTheme().cardBgColor!
+        ]
+        let attrString = NSAttributedString(string: "Flips: \(flipCount)", attributes: attr)
+        flipCountLabel.attributedText = attrString
     }
     
 }
