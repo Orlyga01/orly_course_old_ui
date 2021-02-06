@@ -12,8 +12,9 @@ import UIKit
 ///
 
 struct Card: Hashable {
-    var isMatched = false
-    private var identifier: Int
+    var isMatched: Bool? = nil
+    var isSelected = false
+    var identifier: Int
     var text: String?
     var position: CardPosition?
     
@@ -45,9 +46,12 @@ struct Card: Hashable {
         Card.identifierFactory += 1
         return Card.identifierFactory
     }
+   
 }
 struct CardPosition {
     var x: CGFloat
     var y: CGFloat
     var available: Bool = true
 }
+
+

@@ -10,14 +10,20 @@ import UIKit
 class ViewController: UIViewController {
     // 100 for side padding
     let padding: CGFloat = 10.0
-    var wrapperWidth: CGFloat {cardWrapper.bounds.width + 2*padding}
+    var wrapperWidth: CGFloat {cardWrapper.bounds.width - 2*padding}
     let minWidth: CGFloat = 70.0
-    var minHeight: CGFloat {minWidth * 1.5}
+    var minHeight: CGFloat {minWidth * 1}
+    let stateColor: [String: CGColor] =   [
+    "success": #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1),
+    "error": #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1),
+    "normal": #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1),
+    "selected": #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+    ]
 
     private lazy var game = SetGame()
     // The card has 4 digits as text, 1st digit determines the shape, 2nd determined the color, 3rd the amount, and 4th the fill
     var shapes: [String] = ["●", "■", "▲"]
-    var colorChoices: [UIColor] = [UIColor.blue, UIColor.red, #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)]
+    var colorChoices: [UIColor] = [UIColor.blue, UIColor.red, #colorLiteral(red: 0.5703777671, green: 1, blue: 0.2885819972, alpha: 1)]
     var colorMode: [CGFloat] = [10.0, -3.0, -3.0]
     var lastCardPosition: CardPosition?
 
@@ -63,6 +69,8 @@ class ViewController: UIViewController {
         
     }
     func updateFromModel() {
+        cardWrapper.subviews.forEach { $0.removeFromSuperview() }
+        lastCardPosition = nil
         for card in game.cards {
             createButton(card)
         }
@@ -71,21 +79,21 @@ class ViewController: UIViewController {
     func createButton(_ card: Card) {
         let newPosition = NextPosition(self.lastCardPosition)
         self.lastCardPosition = newPosition
-        
         let button  = UIButton(frame: CGRect(x: newPosition.x, y: newPosition.y, width: minWidth, height: minHeight))
-        button.layer.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        button.layer.backgroundColor = #colorLiteral(red: 0.9604794383, green: 0.9547693133, blue: 0.9648682475, alpha: 1)
         button.layer.cornerRadius = 5.0
         button.titleLabel?.baselineAdjustment = .alignCenters
         button.contentHorizontalAlignment = .center
+        button.layer.borderWidth = 3
+        button.layer.borderColor = stateColor(card)
         let attribute: [NSAttributedString.Key : Any] = [
             .strokeWidth: colorMode[Int(card.text![3])!],
             .foregroundColor: setStrike(modePosition: Int(card.text![3])!, colorPosition: Int(card.text![1])!),
-          //  .font: UIFont.systemFont(ofSize: 50.0)
         ]
         button.setAttributedTitle(NSAttributedString(string: getCardContent(card), attributes: attribute), for: .normal)
+        button.tag = card.identifier
         button.addTarget(self, action: #selector(chooseCard(_:)), for: .touchUpInside)
         button.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-
         cardWrapper.addSubview(button)
     }
     private func setStrike( modePosition: Int, colorPosition: Int) -> UIColor {
@@ -100,12 +108,13 @@ class ViewController: UIViewController {
     }
     
     @objc func chooseCard(_ sender: UIButton) {
-        sender.backgroundColor = UIColor.red
-        print ("hi")
+        game.chooseCard(sender.tag)
+        updateFromModel()
     }
+    
     func getCardContent(_ card: Card) -> String {
         let shape = shapes[Int(card.text!.prefix(1))!]
-        let shapeAmount = Int(card.text![0])! + 1
+        let shapeAmount = Int(card.text![2])! + 1
         var text: String = ""
         for i in 1...shapeAmount {
             let space = i == shapeAmount ? "" : " "
@@ -113,6 +122,14 @@ class ViewController: UIViewController {
         }
         return text
 
+    }
+    
+    private func stateColor(_ card: Card) -> CGColor{
+        if card.isMatched == nil {
+            // nisso why is the state color consider optional? and what is yhe better way to have set of constant value?
+            return card.isSelected ?  stateColor["selected"]! : stateColor["normal"]!
+        }
+        return   card.isMatched! ? stateColor["success"]! : stateColor["error"]!
     }
 }
 extension UIView {
@@ -124,9 +141,18 @@ extension UIView {
     self.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
     }
 }
-extension StringProtocol {
-    subscript(offset: Int) -> String {
-        String(self[index(startIndex, offsetBy: offset)])
-    }
+extension UIButton {
+    private static var _card: Card = Card(text: "")
+        var card: Card {
+            get {
+                return UIButton._card
+            }
+            set(newValue) {
+                UIButton._card = newValue
+            }
+        }
 }
+
+
+
 
