@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     // 100 for side padding
     let padding: CGFloat = 10.0
     var wrapperWidth: CGFloat {cardWrapper.bounds.width - 2*padding}
-    let minWidth: CGFloat = 70.0
+    let minWidth: CGFloat = 50.0
     var minHeight: CGFloat {minWidth * 1}
     let stateColor: [String: CGColor] =   [
     "success": #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1),
@@ -26,8 +26,13 @@ class ViewController: UIViewController {
     var colorChoices: [UIColor] = [UIColor.blue, UIColor.red, #colorLiteral(red: 0.5703777671, green: 1, blue: 0.2885819972, alpha: 1)]
     var colorMode: [CGFloat] = [10.0, -3.0, -3.0]
     var lastCardPosition: CardPosition?
-
+    @IBOutlet weak var addCards: UIButton!
+    @IBAction func addCards(_ sender: UIButton) {
+            game.addMoreCards(nil)
+            updateFromModel()
+        }
     @IBOutlet weak var cardWrapper: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         cardWrapper.setDefaultConstraints(wrapperView: self.view)
@@ -68,12 +73,15 @@ class ViewController: UIViewController {
         }
         
     }
+    
     func updateFromModel() {
         cardWrapper.subviews.forEach { $0.removeFromSuperview() }
         lastCardPosition = nil
         for card in game.cards {
             createButton(card)
         }
+        addCards.isEnabled = game.addCardsAllowed
+
     }
    
     func createButton(_ card: Card) {

@@ -29,19 +29,31 @@
                                     <action selector="newGame:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qGv-Nw-FCg"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xr0-PN-0Bm">
+                                <rect key="frame" x="322" y="812" width="72" height="30"/>
+                                <state key="normal" title="Add Cards"/>
+                                <connections>
+                                    <action selector="addCards:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dp9-oC-LBb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="9Cf-Vb-10p"/>
-                            <constraint firstItem="4RU-VR-0Ru" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Hd4-8k-D9k"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="4RU-VR-0Ru" secondAttribute="bottom" constant="20" id="hYz-jr-h5V"/>
-                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="hpc-m6-iLh"/>
-                            <constraint firstItem="4RU-VR-0Ru" firstAttribute="top" secondItem="iwf-Z6-lzT" secondAttribute="bottom" constant="45" id="q6e-Fm-zKh"/>
-                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="qff-kX-LOP"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xr0-PN-0Bm" secondAttribute="trailing" constant="20" id="4JQ-Pz-PaN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="xr0-PN-0Bm" secondAttribute="bottom" constant="20" id="A5u-Ct-svD"/>
+                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="IAG-lU-Ocm"/>
+                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="K83-f0-kd1"/>
+                            <constraint firstItem="4RU-VR-0Ru" firstAttribute="top" secondItem="iwf-Z6-lzT" secondAttribute="bottom" constant="45" id="R6w-5u-clo"/>
+                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="ShN-0i-OXp"/>
+                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="centerX" secondItem="4RU-VR-0Ru" secondAttribute="centerX" id="Yr1-D2-gSo"/>
+                            <constraint firstItem="iwf-Z6-lzT" firstAttribute="trailing" secondItem="xr0-PN-0Bm" secondAttribute="trailing" id="ZhS-kU-24p"/>
+                            <constraint firstItem="4RU-VR-0Ru" firstAttribute="baseline" secondItem="xr0-PN-0Bm" secondAttribute="baseline" id="fhb-hG-3eN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="4RU-VR-0Ru" secondAttribute="bottom" constant="20" id="gqy-uE-4yg"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addCards" destination="xr0-PN-0Bm" id="zji-if-8l7"/>
                         <outlet property="cardWrapper" destination="iwf-Z6-lzT" id="XFo-NZ-zhC"/>
                     </connections>
                 </viewController>
@@ -56,6 +68,7 @@
                     <view key="view" contentMode="scaleToFill" id="1nI-cC-qa9">
                         <rect key="frame" x="0.0" y="0.0" width="374" height="723"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="FIY-ds-HlM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                 </viewController>

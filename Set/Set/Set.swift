@@ -14,7 +14,7 @@ struct SetGame {
     let initialDisplayCards: Int =  12
     let maxDisplayCards: Int =  24
     let addedCards: Int = 3
-    var cantAddCards: Bool = false
+    var addCardsAllowed: Bool = true
     private var gameSets: [String] = [String]()
     private var openCards: [Card] = [Card]()
 
@@ -33,13 +33,14 @@ struct SetGame {
     mutating func startGame() {
         addMoreCards(initialDisplayCards)
     }
-    mutating func addMoreCards(_ num: Int) {
+    mutating func addMoreCards(_ num: Int?) {
+        let cardno = num ?? addedCards
         if (cards.count > maxDisplayCards-addedCards) || (Int(pow(Double(addedCards), 4)) <=  cards.count) {
-            cantAddCards = true;
+            addCardsAllowed = false;
         } else {
-            for _ in 1...num {
+            for _ in 1...cardno {
                 cards.append(Card(text: setCardContent()))
-                cantAddCards = true;
+                addCardsAllowed = !(cards.count == maxDisplayCards );
             }
         }
        
@@ -50,34 +51,37 @@ struct SetGame {
         gameSets.remove(at: randomElement)
         return element
     }
+    
     mutating func removeSelectedMatchedCards() {
         for card in openCards {
-            let firstIndex = IndexById(card.identifier)
+            let firstIndex = IndexById(card.identifier, cards)
             cards.remove(at: firstIndex);
         }
     }
+    
     mutating func resetSelectedUnMatched() {
         for card in openCards {
-            let firstIndex = IndexById(card.identifier)
+            let firstIndex = IndexById(card.identifier, cards)
             cards[firstIndex].isSelected = false
             cards[firstIndex].isMatched = nil
         }
     }
     
     mutating func chooseCard(_ cardId: Int) {
-       // var card = cards[IndexById(cardId)]
+
         // nisso how can I get a pointer to an item in array
         // missing pointer to element in array
-        cards[IndexById(cardId)].isSelected = !cards[IndexById(cardId)].isSelected
+        let index = IndexById(cardId, cards)
+        cards[index].isSelected = !cards[index].isSelected
         // clicked twice - then it was unselected we need to remove form the selected array
-        if !cards[IndexById(cardId)].isSelected {
-            openCards.remove(at: IndexById(cardId))
+        if !cards[index].isSelected && openCards.count < 3 {
+            openCards.remove(at: IndexById(cardId, openCards))
             return
         }
         if (openCards.count == addedCards) {
             //if its the first card of a set - we need to set all remaining cards as not chossen
             // and if there was a match we need to make this card disappear and add new cards if possible
-            let firstIndex = IndexById(openCards[0].identifier)
+            let firstIndex = IndexById(openCards[0].identifier, cards)
             if cards[firstIndex].isMatched! {
                 removeSelectedMatchedCards()
                 addMoreCards(addedCards)
@@ -87,12 +91,10 @@ struct SetGame {
             openCards.removeSubrange(0...addedCards - 1)
 
         }
-        openCards.append(cards[IndexById(cardId)])
+        openCards.append(cards[index])
         if openCards.count == addedCards {
             checkIsMatched()
         }
-       
-        
         
     }
     
@@ -127,9 +129,10 @@ struct SetGame {
         return true
     }
     
-    func IndexById(_ id: Int) -> Int {
-        for index in cards.indices {
-            if cards[index].identifier == id {
+    func IndexById( _ id: Int, _ array: [Card]?) -> Int {
+        let arr = array ?? cards
+        for index in arr.indices {
+            if arr[index].identifier == id {
                 return index
             }
         }
